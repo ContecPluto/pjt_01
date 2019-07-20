@@ -27,6 +27,7 @@ avengers = [
 
 #1. csv.DictWriter()
 import csv
+
 with open('avengers.csv','w', newline='', encoding='utf-8') as f:
     #저장할 데이터들의 필드이름 미리 정한다.
     feldnames = ('name', 'gender','appearances','years since joining' )

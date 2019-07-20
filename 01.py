@@ -9,9 +9,9 @@ API_KEY=config('API_KEY')
 result = {}
 
 
-for i in range(10):
-    targetDt = (datetime(2019,7,13) - timedelta(weeks=i)).strftime('%Y%m%d')
-    url = requests.get(f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key={API_KEY}&movieCd={targetDt}').json()
+for week in range(50):
+    targetDt = (datetime(2019,7,13) - timedelta(weeks=week)).strftime('%Y%m%d')
+    url = requests.get(f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.json?key={API_KEY}&targetDt={targetDt}').json()
     movies = url.get('boxOfficeResult').get('weeklyBoxOfficeList')
 
     # 주간/주말 박스오피스 데이터 리스트로 가져오기

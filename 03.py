@@ -1,28 +1,33 @@
 import csv
 import requests
 import json
-from datetime import datetime, timedelta
 from pprint import pprint
 from decouple import config
 
 API_KEY=config('API_KEY')
 result = {}
-peopleCd={
-    '김종현' :'20164556'
-}
+movie_result = {}
+name_list=[]
 
-for name,code in peopleCd.items():
-    url = requests.get(f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleInfo.json?key={API_KEY}&peopleCd={code}').json()
-    people_info = url.get('peopleInfoResult').get('peopleInfo')
-    pprint(url)
+with open('movie.csv', 'r', newline='', encoding='utf-8') as f:
+    reader = csv.reader(f)
+    movie_result = list(reader)
+
+for name in movie_result:
+    name_list.append(name[8])
+del name_list[0]
+
+
+for name in name_list:
+    url = requests.get(f'http://www.kobis.or.kr/kobisopenapi/webservice/rest/people/searchPeopleList.json?key={API_KEY}&peopleNm={name}').json()
+    people_info = url.get('peopleListResult').get('peopleList')[0]
     
-    result[code] = dict(
-        peopleCd = code,
-        peopleNm = name,
+    result[name] = dict(
+        peopleCd = people_info.get('peopleCd'),
+        peopleNm = people_info.get('peopleNm'),
         repRoleNm = people_info.get('repRoleNm'),
-        filmos = people_info.get('filmos')[0].get('movieNm')
+        filmos = people_info.get('filmoNames')
     )    
-pprint(result)
 
 with open('director.csv','w', newline='', encoding='utf-8') as f:
     feldnames = ('peopleCd','peopleNm','repRoleNm','filmos')
